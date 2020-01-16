@@ -1,0 +1,31 @@
+package Pyroblast
+import public Assets
+import Projectile
+import CheekySpell
+import ChannelAbilityPreset
+import SpellManager
+
+class Pyroblast extends Projectile
+    let NAME = "Pyroblast"
+    let TOOL = "Sends a fire"
+    let TOOL_EXTENDED = "Sends a bigger fire"
+    let ICON = Icons.bTNOrbOfFire
+    
+    override function genObj()
+        OBJECT = new ChannelAbilityPreset(ID, 4, true)
+            ..setName("Pyroblast")
+            ..presetTooltipNormal(lvl -> TOOL)
+            ..presetTooltipNormalExtended(lvl -> TOOL_EXTENDED)
+            ..presetIcon(ICON)
+            ..presetButtonPosNormal(0, 0)
+            ..presetManaCost(lvl -> 0)
+            ..presetCooldown(lvl -> 1)
+            ..presetHotkey("Q")
+            ..presetTargetTypes(TARGET_TYPE)
+
+    override function setEvent()
+
+@compiletime function genSpell()
+    createSpell( new Pyroblast )
+                
+

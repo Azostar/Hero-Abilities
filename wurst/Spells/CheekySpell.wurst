@@ -1,0 +1,9 @@
+package CheekySpell
+import ChannelAbilityPreset
+
+public abstract class CheekySpell
+    let ID = compiletime(ABIL_ID_GEN.next())
+    ChannelAbilityPreset OBJECT
+
+    abstract function setEvent()
+    abstract function genObj()

@@ -1,0 +1,16 @@
+package SpellManager
+import HashMap
+import CheekySpell
+import ChannelAbilityPreset
+
+public IterableMap<int, CheekySpell> spellList = new IterableMap<int, CheekySpell>()
+
+public function createSpell( CheekySpell spell )
+    spellList.put(spell.ID, spell)
+    spell.genObj()
+
+init
+    for id in spellList
+        spellList.get(id).setEvent()
+
+ 

@@ -1,0 +1,7 @@
+package Projectile
+import CheekySpell
+import ChannelAbilityPreset
+
+public abstract class Projectile extends CheekySpell
+    let TARGET_TYPE = Targettype.UNIT
+    

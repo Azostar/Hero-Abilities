@@ -1,0 +1,7 @@
+package Init
+import SpellManager
+import UnitIds
+
+init
+    unit u = createUnit( GetLocalPlayer(), UnitIds.footman, vec2(0,0), angle(0) )
+    u.addAbility( getSpellByName("Pyroblast") )

@@ -1,0 +1,10 @@
+package AbilityObjects
+
+// Object imports
+
+import O_Pyroblast
+
+// Config holder
+
+public class AbilityHolder
+    static class Pyroblast extends C_Pyroblast

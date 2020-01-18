@@ -1,0 +1,8 @@
+package E_Pyroblast
+import ObjectManager
+import ClosureEvents
+
+init
+    EventListener.onTargetCast( Abilities.Pyroblast.ID ) (unit caster, unit target) ->
+        caster.damageTarget(target, 100)
+

@@ -1,0 +1,24 @@
+package O_Pyroblast
+import public Assets
+import ChannelAbilityPreset
+
+public class C_Pyroblast
+    static constant ID = ABIL_ID_GEN.next()
+    static constant NAME = "Pyroblast"
+    static constant TARGET_TYPE = Targettype.UNIT
+    static constant TOOL = "Pyroblast"
+    static constant TOOL_EXTENDED = "Sends a bigger fire"
+    static constant ICON = Icons.bTNOrbOfFire
+
+@compiletime function genObj()
+    new ChannelAbilityPreset(C_Pyroblast.ID, 4, true)
+        ..setName(C_Pyroblast.NAME)
+        ..presetTooltipNormal(lvl -> C_Pyroblast.TOOL)
+        ..presetTooltipNormalExtended(lvl -> C_Pyroblast.TOOL_EXTENDED)
+        ..presetIcon(C_Pyroblast.ICON)
+        ..presetButtonPosNormal(4, 4)
+        ..presetManaCost(lvl -> 0)
+        ..presetCooldown(lvl -> 1)
+        ..presetHotkey("Q")
+        ..presetTargetTypes(C_Pyroblast.TARGET_TYPE)
+

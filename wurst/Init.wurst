@@ -1,7 +1,7 @@
 package Init
-import SpellManager
+import ObjectManager
 import UnitIds
 
 init
-    unit u = createUnit( GetLocalPlayer(), UnitIds.footman, vec2(0,0), angle(0) )
-    u.addAbility( getSpellByName("Pyroblast") )
+    let g = GetUnitsOfPlayerAndTypeId(players[0], UnitIds.bloodmage)
+    g.next().addAbility( Abilities.Pyroblast.ID )

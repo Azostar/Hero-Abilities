@@ -1,8 +1,0 @@
-package CheekySpell
-import ChannelAbilityPreset
-
-public abstract class CheekySpell
-    abstract function getName() returns string
-    abstract function getID() returns int
-    abstract function setEvent()
-    abstract function genObj()

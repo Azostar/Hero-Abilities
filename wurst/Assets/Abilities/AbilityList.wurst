@@ -1,0 +1,10 @@
+package AbilityList
+
+// Object imports
+
+import _Pyroblast
+
+// Config holder
+
+public class AbilityList
+    static class Pyroblast extends _Pyroblast

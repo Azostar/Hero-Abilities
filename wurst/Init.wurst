@@ -1,5 +1,5 @@
 package Init
-import ObjectManager
+import ObjectList
 import UnitIds
 
 init

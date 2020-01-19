@@ -1,0 +1,5 @@
+package ObjectList
+import AbilityList
+
+public class ObjectList
+    static class Abilities extends AbilityList

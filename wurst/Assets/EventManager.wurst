@@ -1,0 +1,13 @@
+package EventManager
+import HashMap
+import AbilityClass
+import ClosureEvents
+
+HashMap<int, AbilityClass> spellList = new HashMap<int, AbilityClass>()
+
+// Registers spell in the spellList, used later to call the spells effects
+public function registerSpell( AbilityClass spell )
+    spellList.put( spell.getId(), spell )
+
+init
+    

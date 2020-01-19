@@ -1,0 +1,5 @@
+package AbilityClass
+
+public interface AbilityClass
+    function onCast()
+    function getId() returns int

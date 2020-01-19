@@ -1,13 +1,25 @@
 package EventManager
 import HashMap
-import AbilityClass
 import ClosureEvents
 
-HashMap<int, AbilityClass> spellList = new HashMap<int, AbilityClass>()
+HashMap<int, AbilityEvent> spellList = new HashMap<int, AbilityEvent>()
+
+public interface AbilityEvent
+    function onCast()
+    function getId() returns int
 
 // Registers spell in the spellList, used later to call the spells effects
-public function registerSpell( AbilityClass spell )
+public function registerAbilityEvent( AbilityEvent spell )
     spellList.put( spell.getId(), spell )
 
+function checkSpell()
+    let id = EventData.getSpellAbilityId()
+    let spell = spellList.get( id )
+
+    if spell != null
+        spell.onCast()
+
 init
-    
+    CreateTrigger()
+        ..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+        ..addAction( () -> checkSpell() )

@@ -2,10 +2,9 @@ package _Pyroblast
 import public Assets
 import ChannelAbilityPreset
 import ClosureEvents
-import AbilityClass
 import EventManager
 
-public class _Pyroblast implements AbilityClass
+public class _Pyroblast implements AbilityEvent
     static constant ID = ABIL_ID_GEN.next()
     static constant NAME = "Pyroblast"
     static constant TARGET_TYPE = Targettype.UNIT
@@ -36,3 +35,6 @@ public class _Pyroblast implements AbilityClass
         ..presetCooldown(lvl -> 1)
         ..presetHotkey("Q")
         ..presetTargetTypes(_Pyroblast.TARGET_TYPE)
+
+init
+    registerAbilityEvent( new _Pyroblast() )

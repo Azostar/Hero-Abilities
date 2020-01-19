@@ -13,7 +13,7 @@ public class _Pyroblast implements AbilityEvent
     static constant TARGET_TYPE = Targettype.UNIT
     static constant TOOL = "Pyroblast"
     static constant TOOL_EXTENDED = "Sends a bigger fire"
-    static constant ICON = Icons.bTNOrbOfFire 1
+    static constant ICON = Icons.bTNOrbOfFire
     static constant EFFECT = Abilities.fireBallMissile
     static constant FLAME_START_DISTANCE = 200
     static constant FLAME_END_HEIGHT = 1

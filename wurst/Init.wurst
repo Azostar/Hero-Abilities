@@ -3,5 +3,6 @@ import ObjectList
 import UnitIds
 
 init
+    // v0.1.5
     let g = GetUnitsOfPlayerAndTypeId(players[0], UnitIds.bloodmage)
     g.next().addAbility( Abilities.Pyroblast.ID )

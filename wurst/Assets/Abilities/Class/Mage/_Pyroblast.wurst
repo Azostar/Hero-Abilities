@@ -2,24 +2,54 @@ package _Pyroblast
 import public Assets
 import ChannelAbilityPreset
 import ClosureEvents
+import ClosureTimers
 import EventManager
+import LinkedList
+import Distance
 
 public class _Pyroblast implements AbilityEvent
-    static constant ID = ABIL_ID_GEN.next()
+    static constant ID = compiletime( ABIL_ID_GEN.next() )
     static constant NAME = "Pyroblast"
     static constant TARGET_TYPE = Targettype.UNIT
     static constant TOOL = "Pyroblast"
     static constant TOOL_EXTENDED = "Sends a bigger fire"
-    static constant ICON = Icons.bTNOrbOfFire 
-    static constant EFFECT = Abilities.flameStrikeEmbers
+    static constant ICON = Icons.bTNOrbOfFire 1
+    static constant EFFECT = Abilities.fireBallMissile
+    static constant FLAME_START_DISTANCE = 200
+    static constant FLAME_END_HEIGHT = 1
+    static constant FLAME_NUM = 5
+    static constant FLAME_TIME = 1
 
     override function onCast()
-        let target = EventData.getSpellTargetUnit()
         let caster = EventData.getSpellAbilityUnit()
+        let target = EventData.getSpellTargetUnit()
+        real interval = 0.033
+        real time = 0
+        real dist_int = FLAME_START_DISTANCE * interval / FLAME_TIME
+        real radn_int = PI2 * interval / FLAME_TIME
+        int tick = 0
 
-        let damage = ( caster.getInt( true ) * 2 ) + 100
+        LinkedList<effect> flames = new LinkedList<effect>
 
-        caster.damageTarget( target, damage.toReal() )
+        for i = 0 to FLAME_NUM - 1
+            flames.add( addEffect( EFFECT, caster.getPos() )
+                ..setPos( caster.getPos() + vector2FromDistance( FLAME_START_DISTANCE.toReal(), (PI2/FLAME_NUM) * i ) )
+            )
+
+        doPeriodically( interval ) update ->
+            for i = 0 to FLAME_NUM - 1
+                flames.get(i).setPos(   caster.getPos() +
+                                        vector2FromDistance(    FLAME_START_DISTANCE.toReal() - ( dist_int * tick ), 
+                                                                ( (PI2/FLAME_NUM) * i ) + ( radn_int * tick )
+                                        )   
+                )
+            
+            time += interval
+            tick += 1
+                
+            if time > FLAME_TIME
+                destroy(update)
+
 
     override function getId() returns int
         return ID

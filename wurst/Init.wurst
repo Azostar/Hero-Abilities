@@ -3,6 +3,6 @@ import ObjectList
 import UnitIds
 
 init
-    // v0.1.5
-    let g = GetUnitsOfPlayerAndTypeId(players[0], UnitIds.bloodmage)
-    g.next().addAbility( Abilities.Pyroblast.ID )
+    let h = GetUnitsOfPlayerAndTypeId( players[0], UnitIds.bloodmage ).next()
+    h.addAbility( Abilities.Pyroblast.ID )
+    let u = createUnit( players[0], UnitIds.footman, h.getPos(), angle(0) )

@@ -1,4 +1,4 @@
 package Distance
 
-public function vector2FromDistance( real distance, real radians ) returns vec2
+public function vec2FromDistance( real distance, real radians ) returns vec2
     return vec2( distance * Sin( radians ), distance * Cos( radians ) )

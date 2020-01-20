@@ -7,6 +7,13 @@ import EventManager
 import LinkedList
 import Distance
 
+enum spellState
+    BEGIN
+    ENDANIM
+    GROWTH
+    LAUNCH
+    DETONATE
+
 public class _Pyroblast implements AbilityEvent
     static constant ID = compiletime( ABIL_ID_GEN.next() )
     static constant NAME = "Pyroblast"
@@ -16,39 +23,117 @@ public class _Pyroblast implements AbilityEvent
     static constant ICON = Icons.bTNOrbOfFire
     static constant EFFECT = Abilities.fireBallMissile
     static constant FLAME_START_DISTANCE = 200
-    static constant FLAME_END_HEIGHT = 1
+    static constant FLAME_ANIM_RADIUS = 80
+    static constant FLAME_END_HEIGHT = 400
     static constant FLAME_NUM = 5
     static constant FLAME_TIME = 1
+    static constant FLAME_CURVE = 3
+    static constant FLAME_Z_OFFSET = vec3(0,0,64)
+    static constant FLAME_SIZE = 2.4
+    static constant INTERVAL = 0.033
 
     override function onCast()
-        let caster = EventData.getSpellAbilityUnit()
-        let target = EventData.getSpellTargetUnit()
-        real interval = 0.033
-        real time = 0
-        real dist_int = FLAME_START_DISTANCE * interval / FLAME_TIME
-        real radn_int = PI2 * interval / FLAME_TIME
-        int tick = 0
+        var caster          = EventData.getSpellAbilityUnit()
+        var target          = EventData.getSpellTargetUnit()
+        int flam_cnt        = FLAME_NUM - 1
+        int tick            = 0
+        real radiusSize     = 0
+        real flameSize      = 0
+        real time           = 0
+        real dist_int       = FLAME_START_DISTANCE * INTERVAL / FLAME_TIME
+        real radn_int       = PI2 * INTERVAL / FLAME_TIME
+        real radi_int       = FLAME_ANIM_RADIUS * 2 * INTERVAL / FLAME_TIME
+        real circleMod      = ( PI2 / FLAME_NUM )
+        real radiusGrowth   = FLAME_ANIM_RADIUS * INTERVAL / FLAME_TIME
+        real flameGrowth    = FLAME_SIZE * INTERVAL / FLAME_TIME
+        effect largeFlame   = null
 
         LinkedList<effect> flames = new LinkedList<effect>
 
-        for i = 0 to FLAME_NUM - 1
+        for i = 0 to flam_cnt
             flames.add( addEffect( EFFECT, caster.getPos() )
-                ..setPos( caster.getPos() + vector2FromDistance( FLAME_START_DISTANCE.toReal(), (PI2/FLAME_NUM) * i ) )
+                ..setPos( caster.getPos() + vec2FromDistance( FLAME_START_DISTANCE.toReal(), circleMod * i ) )
+                ..setScale(0.85)
             )
 
-        doPeriodically( interval ) update ->
-            for i = 0 to FLAME_NUM - 1
-                flames.get(i).setPos(   caster.getPos() +
-                                        vector2FromDistance(    FLAME_START_DISTANCE.toReal() - ( dist_int * tick ), 
-                                                                ( (PI2/FLAME_NUM) * i ) + ( radn_int * tick )
-                                        )   
-                )
-            
-            time += interval
-            tick += 1
+        spellState stage = spellState.BEGIN
+
+        doPeriodically( INTERVAL ) ( update ) ->
+            let radTickMod  = ( radn_int * tick )
+
+            switch stage
+                case BEGIN
+                    for i = 0 to flam_cnt
+                        let distTickMod = ( dist_int * tick )
+                        let heightMod   = FLAME_END_HEIGHT/(FLAME_TIME/INTERVAL).pow(FLAME_CURVE.toReal())*tick.pow(FLAME_CURVE)
+
+                        flames.get(i)..setPos( caster.getPos() +
+                                        vec2FromDistance( FLAME_START_DISTANCE.toReal() - distTickMod, ( circleMod * i ) + radTickMod ) )
+                            ..setZ( heightMod )
                 
-            if time > FLAME_TIME
-                destroy(update)
+                    time += INTERVAL
+                        
+                    if time > FLAME_TIME
+                        stage = spellState.ENDANIM
+
+                case ENDANIM
+                    largeFlame = addEffect( EFFECT, flames.get(1).getPos3() )
+                        ..setScale(0)
+                        
+                    for i = 0 to flam_cnt
+                        flames.get(i).setScale(0.75)
+                        
+                    stage = GROWTH
+
+                case GROWTH    
+                    var origin = largeFlame.getPos3()
+
+                    if radiusSize < FLAME_ANIM_RADIUS
+                        radiusSize  += radiusGrowth
+                        flameSize   += flameGrowth
+
+                        largeFlame.setScale( flameSize )
+
+                        for i = 0 to flam_cnt
+                            var offset   = circleMod * i
+                            var rotation = radTickMod + offset
+
+                            var point = vec3(
+                                radiusSize * Cos( offset ) * Sin( rotation * 0.65 ),
+                                radiusSize * Sin( offset ) * Sin( rotation * 0.65 ),
+                                radiusSize * Cos( rotation * 0.65 )
+                            )
+
+                            var newPos = origin + point + FLAME_Z_OFFSET
+
+                            flames.get(i).setPos( newPos )
+                    else
+                        stage = spellState.LAUNCH
+                
+                case LAUNCH
+                    if largeFlame != null
+                        var origin = largeFlame.getPos3()
+                        var flipflop = 1
+
+                        for i = 0 to flam_cnt
+                            var offset   = circleMod * i
+                            var rotation = radTickMod + offset
+
+                            var point = vec3(
+                                FLAME_ANIM_RADIUS.toReal() * Cos( offset ) * Sin( rotation * 0.65 ),
+                                FLAME_ANIM_RADIUS.toReal() * Sin( offset ) * Sin( rotation * 0.65 ),
+                                FLAME_ANIM_RADIUS.toReal() * Cos( rotation * 0.65 )
+                            )
+
+                            var newPos = origin + point + FLAME_Z_OFFSET
+
+                            flames.get(i).setPos( newPos )
+                            
+                case DETONATE
+            
+            tick += 1
+                    
+
 
 
     override function getId() returns int

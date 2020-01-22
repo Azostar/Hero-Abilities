@@ -128,8 +128,11 @@ public class _Pyroblast implements AbilityEvent
                             var newPos = origin + point + FLAME_Z_OFFSET
 
                             flames.get(i).setPos( newPos )
+
+                        
                             
                 case DETONATE
+                        
             
             tick += 1
                     
